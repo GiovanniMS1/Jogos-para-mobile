@@ -75,8 +75,19 @@ public class PlayerBehaviour : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        /* Check if we are running either in the unity
+         * editor or in a standalone build*/
+        #if UNITY_STANDALONE || UNITY_EDITOR
+
+        /* If the mouse is tapped */
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 screenPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            TouchObjects(screenPos);
+        }
+
         /* Check if we are running on a mobile device */
-        #if UNITY_ANDROID
+        #elif UNITY_ANDROID
             
             /* Check if input has registered more than zero touches */
             if (Input.touchCount > 0)
@@ -84,6 +95,7 @@ public class PlayerBehaviour : MonoBehaviour
                 /* Store the first touch detected */
                 Touch touch = Input.touches[0];
 
+                TouchObjects(touch.position);
                 SwipeTeleport(touch);
                 ScalePlayer();
             }
@@ -292,4 +304,59 @@ public class PlayerBehaviour : MonoBehaviour
             currentScale = newScale;
         }
     }
+
+    /// <summary>
+    /// Will determine if we are touching a game object
+    /// and if so call events for it
+    /// </summary>
+    /// <param name="screenPos">
+    /// The position of the touch
+    /// in screen space
+    /// </param>
+    private static void TouchObjects(Vector2 screenPos)
+    {
+        /* Convert the position into a ray */
+        Ray touchRay = Camera.main.ScreenPointToRay(screenPos);
+        RaycastHit hit;
+
+        /* create a LayerMask that will collide with all
+         * possible channels */
+        int layerMask = ~0;
+
+        /* Are we touching an object with a collider? */
+        if (Physics.Raycast(touchRay, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            /* Call the PlayerTouch function if it exists 
+             * on a component attached to this object */
+            hit.transform.SendMessage("PlayerTouch", SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+    /// <summary>
+    /// Will determine if we are touching a game object
+    /// and if so call events for it
+    /// </summary>
+    /// <param name="touch">
+    /// Our touch event
+    /// </param>
+    private static void TouchObjects(Touch touch)
+    {
+        /* Convert the position into a ray */
+        Ray touchRay = Camera.main.ScreenPointToRay(touch.position);
+        RaycastHit hit;
+
+        /* create a LayerMask that will collide with all
+         * possible channels */
+        int layerMask = ~0;
+
+        /* Are we touching an object with a collider? */
+        if (Physics.Raycast(touchRay, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            /* Call the PlayerTouch function if it exists 
+             * on a component attached to this object */
+            hit.transform.SendMessage("PlayerTouch", SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+
 }
