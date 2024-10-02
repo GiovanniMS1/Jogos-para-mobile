@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Jogo sem fim.sln"
+    "dotnet.defaultSolution": "Jogos-para-mobile.sln"
 }

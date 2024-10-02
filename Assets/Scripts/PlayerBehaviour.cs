@@ -143,23 +143,6 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
         }
 
-        if (horizMovement == MobileHorizMovement.Accelerometer)
-        {
-            //Move player based on direction of the accelerometer
-            horizontalSpeed = Input.acceleration.x * dodgeSpeed;
-        }
-
-        //Check if Input has registered more than one zero touches
-        if (Input.touchCount > 0)
-        {
-            if (horizMovement == MobileHorizMovement.ScreenTouch)
-            {
-                //Store the first touch detected
-                Touch touch = Input.touches[0];
-                horizontalSpeed = CalculateMovement(touch.position);
-            }
-        }
-
     #endif
 
         rb.AddForce(horizontalSpeed, 0 ,rollSpeed);
