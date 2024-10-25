@@ -61,6 +61,8 @@ public class PlayerBehaviour : MonoBehaviour
     /// </summary>
     private float currentScale = 1;
 
+    private MobileJoystick joystick;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +70,8 @@ public class PlayerBehaviour : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
+
+        joystick = GameObject.FindObjectOfType <MobileJoystick>();
     }
 
     /// <summary>
@@ -135,8 +139,12 @@ public class PlayerBehaviour : MonoBehaviour
              * on Mobile. */
             if (Input.GetMouseButton(0))
             {
-                var screenPos = Input.mousePosition;
-                horizontalSpeed = CalculateMovement(screenPos);
+                if(!joystick)
+                {
+                    var screenPos = Input.mousePosition;
+                    horizontalSpeed = CalculateMovement(screenPos);
+                }
+                
             }
 
     /* Check if we are running on a mobile device */
@@ -150,8 +158,9 @@ public class PlayerBehaviour : MonoBehaviour
                 break;
             case MobileHorizMovement.ScreenTouch:
                 /* Check if Input registered more than zero touches */
-                if (Input.touchCount > 0)
+                if (!joystick && Input.touchCount > 0)
                 {
+                    /* Store the first touch detected */
                     var firstTouch = Input.touches[0];
                     var screenPos = firstTouch.position;
                     horizontalSpeed = CalculateMovement(screenPos);

@@ -10,6 +10,9 @@ public class PauseScreenBehaviour : MonoBehaviour
     public static bool paused;
     [Tooltip("Reference to the pause menu object to turn on/off")]
     public GameObject pauseMenu;
+
+    [Tooltip("Reference to the on screen controls menu")]
+    public GameObject onScreenControls;
     
     /// <summary>
     /// Change the scene to the menu
@@ -40,12 +43,15 @@ public class PauseScreenBehaviour : MonoBehaviour
         /* If the game is paused, timeScale is 0, otherwise 1 */
         Time.timeScale = paused ? 0 : 1;
         pauseMenu.SetActive(paused);
+        onScreenControls.SetActive(!paused);
     }
     
     public void Start()
     {
-        /* Must be reset in Start or else game will be paused upon restart */
-        paused = false;
+        /* Must be reset in Start or else game will be
+        paused upon
+        * restart */
+        SetPauseMenu(false);
     }
 }
 
