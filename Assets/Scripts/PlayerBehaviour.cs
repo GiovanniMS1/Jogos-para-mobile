@@ -71,7 +71,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
 
-        joystick = GameObject.FindObjectOfType <MobileJoystick>();
+        joystick = GameObject.FindObjectOfType<MobileJoystick>();
     }
 
     /// <summary>
@@ -131,6 +131,13 @@ public class PlayerBehaviour : MonoBehaviour
 
         //Check if we're moving to the side
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
+
+        /* If the joystick is active and the player is moving the 
+        joystick, override the value */
+        if (joystick && joystick.axisValue.x != 0)
+        {
+            horizontalSpeed = joystick.axisValue.x * dodgeSpeed;
+        }
 
     /* Check if we are running either in the Unity
      * editor or in a * standalone build */
